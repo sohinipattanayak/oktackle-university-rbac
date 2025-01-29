@@ -1,41 +1,46 @@
-
-
+// api/server.js (Assuming your backend server file is here)
 
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
 const helmet = require("helmet");
 const { auth } = require("express-oauth2-jwt-bearer");
-const authConfig = require("./src/auth_config.json");
+// api/server.js
+
+require('dotenv').config(); // Load environment variables
+
 
 const app = express();
 
-const port = process.env.API_PORT || 3001;
-const appPort = process.env.SERVER_PORT || 3000;
-const appOrigin = authConfig.appOrigin || `http://localhost:${appPort}`;
+// Retrieve environment variables
+const DOMAIN = process.env.DOMAIN;
+const AUDIENCE = process.env.AUDIENCE;
+const APP_ORIGIN = process.env.APP_ORIGIN || "http://localhost:3000";
+const port = process.env.API_PORT;
 
+// Validate essential environment variables
 if (
-  !authConfig.domain ||
-  !authConfig.audience ||
-  authConfig.audience === "YOUR_API_IDENTIFIER"
+  !DOMAIN ||
+  !AUDIENCE ||
+  AUDIENCE === "YOUR_API_IDENTIFIER"
 ) {
-  console.log(
-    "Exiting: Please make sure that auth_config.json is in place and populated with valid domain and audience values"
+  console.error(
+    "Error: Missing or invalid Auth0 configuration. Please set DOMAIN and AUDIENCE environment variables correctly."
   );
-
-  process.exit();
+  process.exit(1);
 }
 
 app.use(morgan("dev"));
 app.use(helmet());
-app.use(cors({ origin: appOrigin }));
+app.use(cors({ origin: APP_ORIGIN }));
 
 const checkJwt = auth({
-  audience: authConfig.audience,
-  issuerBaseURL: `https://${authConfig.domain}/`,
+  audience: AUDIENCE,
+  issuerBaseURL: `https://${DOMAIN}/`,
   algorithms: ["RS256"],
 });
 
+// Define routes
 app.get("/api/external", checkJwt, (req, res) => {
   res.send({
     msg: "Your access token was successfully validated!",

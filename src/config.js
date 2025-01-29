@@ -1,15 +1,15 @@
-import configJson from "./auth_config.json";
+// src/config.js
 
 export function getConfig() {
   const audience =
-    configJson.audience && configJson.audience !== "YOUR_API_IDENTIFIER"
-      ? configJson.audience
+    process.env.REACT_APP_AUTH0_AUDIENCE && process.env.REACT_APP_AUTH0_AUDIENCE !== "YOUR_API_IDENTIFIER"
+      ? process.env.REACT_APP_AUTH0_AUDIENCE
       : null;
 
   return {
-    domain: configJson.domain,
-    clientId: configJson.clientId,
+    domain: process.env.REACT_APP_AUTH0_DOMAIN,
+    clientId: process.env.REACT_APP_AUTH0_CLIENT_ID,
     ...(audience ? { audience } : null),
-    scope: configJson.scope || "openid profile email",
+    scope: process.env.REACT_APP_AUTH0_SCOPE || "openid profile email",
   };
 }

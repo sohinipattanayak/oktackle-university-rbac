@@ -7,12 +7,14 @@ import StudentCourse from "./views/StudentCourse";
 import InstructorCourse from "./views/InstructorCourse";
 import Navbar from "./components/NavBar"; // Ensure Navbar is correctly implemented
 import PrivateRoute from "./components/PrivateRoute"; // Import PrivateRoute
+import Guide from "./Guide";
 
 const App = () => {
   return (
     <Router>
       <Navbar /> {/* Ensure Navbar is rendered on all pages */}
       <Switch>
+      <Route path="/guide" component={Guide} />
         <Route path="/" exact component={Home} />
         <PrivateRoute
           path="/student-course"
